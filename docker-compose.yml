@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  app:
+    build: .
+    expose:
+      - 8000
+    env_file:
+      - .env
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/app/static
+  
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/app/static
+
+networks:
+  default:
+    name: app_network
+    external: true
+
+volumes:
+  static_volume:
